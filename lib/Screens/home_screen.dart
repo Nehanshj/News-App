@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:news/models/NewsModel.dart';
-import 'file:///E:/Projects/Flutter/news/lib/utils/search_helper.dart';
 import 'package:news/utils/provider.dart';
+import 'package:news/widgets/article_card.dart';
+import 'package:news/widgets/location_bottomsheet.dart';
+import 'package:news/widgets/sources_bottomsheet.dart';
 import 'package:provider/provider.dart';
 
 
@@ -18,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   super.initState();
 
   Provider.of<NewsProvider>(context,listen: false).populateTopHeadlines();
+  Provider.of<NewsProvider>(context,listen: false).fetchSources();
   }
   String _sortType = "Newest";
 
@@ -32,9 +35,10 @@ class _HomeScreenState extends State<HomeScreen> {
             itemCount: context.read<NewsProvider>().articles.length,
             itemBuilder: (context,index){
               NewsArticle instance = newsData.articles[index];
+                print("NUNNNNNNNNNNNNNNNNNNNNNNNNNN\n${instance.title}\n${instance.source}\n${instance.description}");
               return Container(
                 color: Colors.orange,
-                child: Text("Title ${instance.title}"),
+                child: ArticleCard(instance)
               );
             }));
     }
@@ -45,22 +49,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final data = Provider.of<NewsProvider>(context);
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.filter_alt_outlined, color: Colors.white,),
+        foregroundColor: Colors.blue,
+        onPressed: ()=>showModalBottomSheet(
+            context: context,
+            builder: (context) => SourcesFilter()),
+      ),
       appBar: AppBar(
         title: Text("MyNEWS"),
         actions: [
           GestureDetector(
-            onTap: (){
+            onTap: ()=>
               showModalBottomSheet(
                   context: context,
-                  builder: (context) => LocationSelector());
-            },
+                  builder: (context) => LocationSelector()),
             child: Column(
               children: [
                 Text("Location"),
                 Row(
                   children: [
                     Icon(Icons.location_on),
-                    Text("India"),
+                    Text(NewsProvider.country),
                   ],
                 )
               ],
@@ -73,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ///Search Box
         GestureDetector(
           onTap: () {
-          // showSearch(context: context, delegate: CustomSearchDelegate());
+          Navigator.of(context).pushNamed('/search');
           },
           child: Container(
             height: 37,
@@ -107,9 +117,24 @@ class _HomeScreenState extends State<HomeScreen> {
             Text("Top Headlines"),
             PopupMenuButton<sortType>(
               child: Text("Sort: $_sortType"),
-              onSelected: (sortType result) { setState(() { _sortType =enumToString(result);
-              print(_sortType);
-              }); },
+              onSelected: (sortType result) {
+              //   setState(() { _sortType =enumToString(result);
+              //   print(_sortType);
+              // });
+                switch(enumToString(result)){
+                  case "Newest":
+                    data.sortNewest();
+                    break;
+                  case "Oldest":
+                    data.sortOldest();
+                    break;
+                  case "Popularity":
+                    data.populateTopHeadlines();
+                    break;
+                }
+                // if(enumToString(result)=="Newest") data.sortNewest();
+                // if(enumToString(result)=="Oldest") data.sortOldest();
+                },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<sortType>>[
                 const PopupMenuItem<sortType>(
                   value: sortType.Newest,
@@ -128,95 +153,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
          _buildList(context,data),
-
      ]
       ),
     );
   }
 }
 
-class LocationSelector extends StatefulWidget {
-  @override
-  _LocationSelectorState createState() => _LocationSelectorState();
-}
-
-class _LocationSelectorState extends State<LocationSelector> {
-  String _radioValue;
-
-  void _handleRadioValueChange(String value) {
-    setState(() {
-      _radioValue = value;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Text("Choose your location"),
-          Divider(),
-          Expanded(
-            // child: Container(
-            //   height: MediaQuery.of(context).size.height * 0.5,
-              child: ListView(
-                children: [
-                  ListTile(
-                    title: Text("Nepal"),
-                    trailing:  Radio(
-                      value: "Nepal",
-                      groupValue: _radioValue,
-                      onChanged: _handleRadioValueChange,
-                    ),
-                  ),
-                  ListTile(
-                    title: Text("USA"),
-                    trailing:  Radio(
-                      value: "USA",
-                      groupValue: _radioValue,
-                      onChanged: _handleRadioValueChange,
-                    ),
-                  ),
-                  ListTile(
-                    title: Text("Sri Lanka"),
-                    trailing:  Radio(
-                      value: "Sri Lanka",
-                      groupValue: _radioValue,
-                      onChanged: _handleRadioValueChange,
-                    ),
-                  ),
-                  ListTile(
-                    title: Text("England"),
-                    trailing:  Radio(
-                      value: "England",
-                      groupValue: _radioValue,
-                      onChanged: _handleRadioValueChange,
-                    ),
-                  ),
-                  ListTile(
-                    title: Text("Sweden"),
-                    trailing:  Radio(
-                      value: "Sweden",
-                      groupValue: _radioValue,
-                      onChanged: _handleRadioValueChange,
-                    ),
-                  ),
-                  ListTile(
-                    title: Text("Pacific Islands"),
-                    trailing:  Radio(
-                      value: "Pacific Islands",
-                      groupValue: _radioValue,
-                      onChanged: _handleRadioValueChange,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          MaterialButton(onPressed: null,
-          child: Text("APPLY"),)
-        ],
-      ),
-
-    );
-  }
-}
