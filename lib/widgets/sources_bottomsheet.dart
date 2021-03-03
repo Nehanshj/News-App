@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:news/models/sourcesModel.dart';
 import 'package:news/utils/provider.dart';
 import 'package:provider/provider.dart';
 
@@ -40,7 +41,7 @@ class _SourcesFilterState extends State<SourcesFilter> {
             }),
                     ),
           MaterialButton(onPressed: () {
-            context.read<NewsProvider>().populateFromSources();
+           data.updateCriteria("Sources");
             Navigator.of(context).pop();
           },
             child: Text("APPLY"),)

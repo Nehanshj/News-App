@@ -38,34 +38,68 @@ class Webservice {
 
   }
 
-  Future<List<NewsArticle>> fetchTopHeadlines(String country) async {
+  // Future<List<NewsArticle>> fetchTopHeadlines(String country) async {
+  //
+  //   final response = await http.get("https://newsapi.org/v2/top-headlines?country=$country&apiKey=$apiKey");
+  //
+  //   if(response.statusCode == 200) {
+  //
+  //     final result = jsonDecode(response.body);
+  //     Iterable list = result["articles"];
+  //     return list.map((article) => NewsArticle.fromJSON(article)).toList();
+  //
+  //   } else {
+  //     throw Exception("Failed to get top news");
+  //   }
+  //
+  // }
+  // Future<List<NewsArticle>> fetchFromSources(String country, String sources) async {
+  //   print("SOURCES:: $sources");
+  //   final response = await http.get("https://newsapi.org/v2/top-headlines?sources=$sources&apiKey=$apiKey");
+  //
+  //   if(response.statusCode == 200) {
+  //
+  //     final result = jsonDecode(response.body);
+  //     Iterable list = result["articles"];
+  //     return list.map((article) => NewsArticle.fromJSON(article)).toList();
+  //
+  //   } else {
+  //     throw Exception("Failed to get News from Specific Sources");
+  //   }
+  //
+  // }
 
-    final response = await http.get("https://newsapi.org/v2/top-headlines?country=$country&apiKey=$apiKey");
+  Future<List<NewsArticle>> fetchPage(int pageNo,String criteria, String value) async {
 
-    if(response.statusCode == 200) {
+    switch(criteria){
+      case "country":
+      final response = await http.get(
+          "https://newsapi.org/v2/top-headlines?country=$value&pageSize=10&page=$pageNo&apiKey=$apiKey");
 
-      final result = jsonDecode(response.body);
-      Iterable list = result["articles"];
-      return list.map((article) => NewsArticle.fromJSON(article)).toList();
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+        Iterable list = result["articles"];
+        return list.map((json) => NewsArticle.fromJSON(json)).toList();
+      } else {
+        throw Exception("Failed to get news");
+      }
+      break;
 
-    } else {
-      throw Exception("Failed to get top news");
+      case "source":
+        final response = await http.get("https://newsapi.org/v2/top-headlines?sources=$value&apiKey=$apiKey");
+
+        if(response.statusCode == 200) {
+
+          final result = jsonDecode(response.body);
+          Iterable list = result["articles"];
+          return list.map((article) => NewsArticle.fromJSON(article)).toList();
+
+        } else {
+          throw Exception("Failed to get News from Specific Sources");
+        }
+        break;
     }
 
-  }
-  Future<List<NewsArticle>> fetchFromSources(String country, String sources) async {
-    print("SOURCES:: $sources");
-    final response = await http.get("https://newsapi.org/v2/top-headlines?sources=$sources&apiKey=$apiKey");
-
-    if(response.statusCode == 200) {
-
-      final result = jsonDecode(response.body);
-      Iterable list = result["articles"];
-      return list.map((article) => NewsArticle.fromJSON(article)).toList();
-
-    } else {
-      throw Exception("Failed to get News from Specific Sources");
-    }
 
   }
 }

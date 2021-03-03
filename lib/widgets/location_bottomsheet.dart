@@ -9,6 +9,7 @@ class LocationSelector extends StatefulWidget {
 }
 
 class _LocationSelectorState extends State<LocationSelector> {
+
   String _radioValue = NewsProvider.country;
 
   void _handleRadioValueChange(String value) {
@@ -73,8 +74,7 @@ class _LocationSelectorState extends State<LocationSelector> {
             ),
           ),
           MaterialButton(onPressed: () {
-            NewsProvider.country = _radioValue;
-            context.read<NewsProvider>().populateTopHeadlines();
+          context.read<NewsProvider>().updateCountry(_radioValue);
             Navigator.of(context).pop();
           },
             child: Text("APPLY"),)

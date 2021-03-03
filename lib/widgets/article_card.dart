@@ -25,7 +25,7 @@ class ArticleCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(article.source??""),
-                    Text(article.title.split("-").first??""),
+                    Text(article.title.split("-").first??"",maxLines: 4,overflow: TextOverflow.fade,),
                     // Text(article.description??"",maxLines: 4,overflow: TextOverflow.fade,),
                     Text(DateTime.now().difference(article.time).inMinutes.toString() + " Minutes ago" ?? "")
                   ],
@@ -45,7 +45,7 @@ class ArticleCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20.0),
                 child: FadeInImage.assetNetwork(
                   fit: BoxFit.cover,
-                  placeholder: 'assets/loading.gif',
+                  placeholder: 'https://ih1.redbubble.net/image.485923660.1240/fposter,small,wall_texture,product,750x1000.u1.jpg',
                   image:article.urlToImage ?? "https://ih1.redbubble.net/image.485923660.1240/fposter,small,wall_texture,product,750x1000.u1.jpg",
                   imageErrorBuilder: (BuildContext context, Object y, StackTrace z) {
                     return Center(
