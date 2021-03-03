@@ -8,11 +8,9 @@ import 'package:provider/provider.dart';
 import 'Screens/search_screen.dart';
 
 void main() {
-  runApp( MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => NewsProvider()),
-      ],
-      child:MyApp()));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => NewsProvider()),
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -27,11 +25,12 @@ class MyApp extends StatelessWidget {
         fontFamily: "Helvetica",
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-    initialRoute: '/',
-    routes: {
-        '/':(_)=>HomeScreen(),
-        '/detail':(_)=>DetailScreen(),
-        '/search':(_)=>SearchScreen()
-    },);
+      initialRoute: '/',
+      routes: {
+        '/': (_) => HomeScreen(),
+        '/detail': (_) => DetailScreen(),
+        '/search': (_) => SearchScreen()
+      },
+    );
   }
 }

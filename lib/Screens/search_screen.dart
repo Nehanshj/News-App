@@ -5,9 +5,10 @@ import 'package:news/widgets/article_card.dart';
 import 'package:provider/provider.dart';
 
 class SearchScreen extends StatelessWidget {
-  final _controller = TextEditingController();
+  final _controller = TextEditingController(); //Controller for Search Box
 
-  Widget _buildList(BuildContext context,NewsProvider newsData) {
+//function to return list of News Articles queried
+  Widget _buildList(BuildContext context, NewsProvider newsData) {
     switch (newsData.loadingStatus) {
       case LoadingStatus.searching:
         return Align(child: CircularProgressIndicator());
@@ -24,7 +25,7 @@ class SearchScreen extends StatelessWidget {
             Text("No results found!"),
           ],
         ));
-      case LoadingStatus.completed:
+      case LoadingStatus.finished:
         return Expanded(
             child: ListView.builder(
                 itemCount: context.read<NewsProvider>().articleSearched.length,
@@ -52,12 +53,14 @@ class SearchScreen extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
+
+            ///Search Box
             child: TextField(
                 controller: _controller,
-                onSubmitted: (value) {
+                onSubmitted: (val) {
                   // fetch all the news related to the keyword
-                  if (value.isNotEmpty) {
-                    news.search(value);
+                  if (val.isNotEmpty) {
+                    news.search(val);
                   }
                 },
                 decoration: InputDecoration(
@@ -75,9 +78,10 @@ class SearchScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Icon(Icons.search),
                   ),
-                )
-            ),
+                )),
           ),
+
+          ///News Article List View
           _buildList(context, news)
         ],
       ),

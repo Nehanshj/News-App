@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:news/utils/provider.dart';
 import 'package:provider/provider.dart';
 
-
 class SourcesFilter extends StatefulWidget {
   @override
   _SourcesFilterState createState() => _SourcesFilterState();
 }
 
 class _SourcesFilterState extends State<SourcesFilter> {
-
   @override
   Widget build(BuildContext context) {
-    final data= Provider.of<NewsProvider>(context);
-    
+    final data = Provider.of<NewsProvider>(context);
+
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,6 +35,7 @@ class _SourcesFilterState extends State<SourcesFilter> {
             endIndent: 10,
           ),
           Expanded(
+            //CheckList of All the available sources
             child: ListView.builder(
                 itemCount: data.sources.length,
                 itemBuilder: (context, index) {
@@ -62,7 +61,7 @@ class _SourcesFilterState extends State<SourcesFilter> {
               color: Color(0xFF0C54BE),
               textColor: Colors.white,
               onPressed: () {
-                data.updateCriteria("Sources");
+                data.updateCriteria("Sources");//update the criteria for new fetching
                 Navigator.of(context).pop();
               },
               child: Text("APPLY"),
@@ -70,7 +69,6 @@ class _SourcesFilterState extends State<SourcesFilter> {
           )
         ],
       ),
-
     );
   }
 }

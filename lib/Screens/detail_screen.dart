@@ -4,10 +4,9 @@ import 'package:news/models/NewsModel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailScreen extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-    final NewsArticle article= ModalRoute.of(context).settings.arguments;
+    final NewsArticle article = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       backgroundColor: Color(0xFFF5F9FD),
@@ -17,13 +16,9 @@ class DetailScreen extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   icon: Icon(Icons.arrow_forward_ios_rounded),
-      //   label: Text("Read Full Story"),
-      //   onPressed: ()async=> await launch(article.url),
-      // ),
       body: Column(
         children: [
+          ///Image with Title
           Stack(
             children: [
               Hero(
@@ -31,7 +26,7 @@ class DetailScreen extends StatelessWidget {
                 child: Image(
                   height: 200.0,
                   width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fill,
                   image: NetworkImage(article.urlToImage ??
                       "https://st3.depositphotos.com/1030956/16846/v/1600/depositphotos_168466294-stock-illustration-news-logo-on-globe.jpg"),
                 ),
@@ -61,6 +56,8 @@ class DetailScreen extends StatelessWidget {
                       )))
             ],
           ),
+
+          ///News Body
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Column(
@@ -81,12 +78,16 @@ class DetailScreen extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                Text(article.content.split(" [+").first,
+                Text(
+                    article.content
+                        .split(" [+")
+                        .first, //to remove [+1738 char] which comes due to developer plan restriction
                     style: TextStyle(
                         fontWeight: FontWeight.w500, color: Color(0xFF303F60))),
                 SizedBox(height: 25),
                 GestureDetector(
-                    onTap: () async => await launch(article.url),
+                    onTap: () async =>
+                        await launch(article.url), // launch in Web Browser
                     child: Text("See Full Story ᐳ",
                         style: TextStyle(
                             fontWeight: FontWeight.w500,

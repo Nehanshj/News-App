@@ -11,7 +11,9 @@ class ArticleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: ()=>Navigator.of(context).pushNamed('/detail',arguments: article),
+      onTap: () =>
+      //open News Detail Page
+          Navigator.of(context).pushNamed('/detail', arguments: article),
       child: Card(
         color: Color(0xFFF5F9FD),
         shape: RoundedRectangleBorder(
@@ -61,14 +63,14 @@ class ArticleCard extends StatelessWidget {
                     placeholder: 'assets/loading.gif',
                     image: article.urlToImage ??
                         "https://st3.depositphotos.com/1030956/16846/v/1600/depositphotos_168466294-stock-illustration-news-logo-on-globe.jpg",
-                    imageErrorBuilder: (BuildContext context, Object y,
-                        StackTrace z) {
+                    imageErrorBuilder:
+                        (BuildContext context, Object y, StackTrace z) {
                       return Center(
                           child: Icon(
-                            Icons.broken_image,
-                            size: 120,
-                            color: Colors.blueGrey,
-                          ));
+                        Icons.broken_image,
+                        size: 60,
+                        color: Colors.blueGrey,
+                      ));
                     },
                   ),
                 ),

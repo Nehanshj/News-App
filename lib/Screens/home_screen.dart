@@ -15,22 +15,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-
   @override
   initState() {
+    //Check Initially for Internet Connectivity
     checkConnectivity();
+    //Add request to PagingController
     Provider.of<NewsProvider>(context, listen: false)
         .pagingController
         .addPageRequestListener((pageKey) {
       Provider.of<NewsProvider>(context, listen: false).fetchPage(pageKey);
     });
     super.initState();
+    //get sources
     Provider.of<NewsProvider>(context, listen: false).fetchSources();
   }
 
-  String getFullCountryName(String countryTag){
-    switch(countryTag) {
+  //to get Full country name from their CountryCode
+  String getFullCountryName(String countryCode) {
+    switch (countryCode) {
       case "in":
         return "India";
       case "us":
@@ -46,15 +48,15 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  String internet = "";
+  //used for determining connectivity status
+  String internet = "online";
 
   void checkConnectivity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
       internet = "online";
-    }
-    else
+    } else
       internet = "offline";
   }
 
@@ -63,47 +65,56 @@ class _HomeScreenState extends State<HomeScreen> {
     final data = Provider.of<NewsProvider>(context);
 
     return Scaffold(
-        floatingActionButton: internet == "online" ? FloatingActionButton(
-          child: Icon(
-            Icons.filter_alt_outlined, color: Colors.white, size: 28,),
-          backgroundColor: Color(0xFF0C54BE),
-          onPressed: () =>
-              showModalBottomSheet(
+        floatingActionButton: internet == "online"
+            ? FloatingActionButton(
+                child: Icon(
+                  Icons.filter_alt_outlined,
+                  color: Colors.white,
+                  size: 28,
+                ),
+                backgroundColor: Color(0xFF0C54BE),
+                onPressed: () => showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    context: context,
+                    builder: (context) =>
+                        SourcesFilter()), //To filter by Source
+              )
+            : null,
+        appBar: AppBar(
+          title: Text(
+            "MyNEWS",
+            style: TextStyle(fontWeight: FontWeight.w400),
+          ),
+          actions: [
+            GestureDetector(
+              onTap: () => showModalBottomSheet(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   context: context,
-                  builder: (context) => SourcesFilter()),
-        ) : null,
-        appBar: AppBar(
-          title: Text("MyNEWS", style: TextStyle(
-              fontWeight: FontWeight.w400
-          ),),
-          actions: [
-            GestureDetector(
-              onTap: () =>
-                  showModalBottomSheet(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      context: context,
-                      builder: (context) => LocationSelector()),
+                  builder: (context) =>
+                      LocationSelector()), //To Fetch Country specific News
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("LOCATION", style: TextStyle(
-                        fontFamily: "Helvetica",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 12
-                    ),),
+                    Text(
+                      "LOCATION",
+                      style: TextStyle(
+                          fontFamily: "Helvetica",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12),
+                    ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(Icons.location_on),
-                        Text(getFullCountryName(NewsProvider.country),
+                        Text(
+                          getFullCountryName(NewsProvider.country),
                         ),
                       ],
                     )
@@ -113,19 +124,17 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           ],
         ),
-        body:
-        internet == "online" ?
-        RefreshIndicator(
-            onRefresh: () =>
-                Future.sync(
-                      () => data.pagingController.refresh(),
-                ),
-            child:
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Column(
-                  children: [
+        body: internet == "online"
+            //if online show this
+            ? RefreshIndicator(
 
+                ///PUll to refresh functionality
+                onRefresh: () => Future.sync(
+                      () => data.pagingController.refresh(),
+                    ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Column(children: [
                     ///Search Box
                     GestureDetector(
                       onTap: () {
@@ -144,13 +153,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: const EdgeInsets.only(left: 20.0),
                               child: Text(
                                 "Search for news,topics...",
-                                style:
-                                TextStyle(fontSize: 15, color: Colors.blueGrey),
+                                style: TextStyle(
+                                    fontSize: 15, color: Colors.blueGrey),
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 22.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 22.0),
                               child: Icon(
                                 Icons.search,
                                 color: Colors.blueGrey,
@@ -165,15 +174,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Top Headlines", style: TextStyle(
-                            color: Color(0xFF303F60),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 18),),
+                        Text(
+                          "Top Headlines",
+                          style: TextStyle(
+                              color: Color(0xFF303F60),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18),
+                        ),
                         PopupMenuButton<String>(
-                          child: Text("Sort: ${data.sortBy}▼",
-                            style: TextStyle(
-                                color: Color(0xFF303F60)
-                            ),),
+                          child: Text(
+                            "Sort: ${data.sortBy}▼",
+                            style: TextStyle(color: Color(0xFF303F60)),
+                          ),
                           onSelected: (String result) {
                             switch (result) {
                               case "Newest":
@@ -185,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                           },
                           itemBuilder: (BuildContext context) =>
-                          <PopupMenuEntry<String>>[
+                              <PopupMenuEntry<String>>[
                             const PopupMenuItem<String>(
                               value: "Newest",
                               child: Text('Newest'),
@@ -198,179 +210,52 @@ class _HomeScreenState extends State<HomeScreen> {
                         )
                       ],
                     ),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
+
+                    ///Paginated News ListView
                     Expanded(
                       child: PagedListView<int, NewsArticle>(
                         pagingController: data.pagingController,
                         builderDelegate: PagedChildBuilderDelegate<NewsArticle>(
                             itemBuilder: (context, item, index) {
-                              return ArticleCard(item);
-                            }
-                        ),
+                          return ArticleCard(item);
+
+                          ///Custom widget for each article
+                        }),
                       ),
                     ),
                   ]),
-            )
-        )
+                ))
+            //if offline show this
             : Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.portable_wifi_off, size: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 0.6, color: Color(0xFF303F60),),
-              Text("No Internet Connection",),
-              FlatButton(
-                  color: Color(0xFF0C54BE),
-                  onPressed: () {
-                    checkConnectivity(); //Check for connectivity
-                    setState(() {});
-                  }, child: Text("Try Again"))
-            ],
-          ),
-        )
-    );
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.portable_wifi_off,
+                      size: MediaQuery.of(context).size.width * 0.6,
+                      color: Color(0xFF303F60),
+                    ),
+                    Text(
+                      "No Internet Connection",
+                    ),
+                    FlatButton(
+                        color: Color(0xFF0C54BE),
+                        onPressed: () {
+                          checkConnectivity(); //Check for connectivity
+                          setState(() {});
+                        },
+                        child: Text("Try Again"))
+                  ],
+                ),
+              ));
   }
+
   @override
   void dispose() {
     Provider.of(context).pagingController.dispose();
     super.dispose();
   }
-  // String _sortType = "Newest";
-  //
-  // Widget _buildList(BuildContext context,NewsProvider newsData) {
-  //   switch(newsData.loadingStatus) {
-  //     case LoadingStatus.searching:
-  //       return Align(child: CircularProgressIndicator());
-  //     case LoadingStatus.empty:
-  //       return Align(child: Text("No results found!"));
-  //     case LoadingStatus.completed:
-  //       return Expanded(child: ListView.builder(
-  //           itemCount: context.read<NewsProvider>().articles.length,
-  //           itemBuilder: (context,index){
-  //             NewsArticle instance = newsData.articles[index];
-  //               print("NUNNNNNNNNNNNNNNNNNNNNNNNNNN\n${instance.title}\n${instance.source}\n${instance.description}");
-  //             return Container(
-  //               color: Colors.orange,
-  //               child: ArticleCard(instance)
-  //             );
-  //           }));
-  //   }
-  //
-  // }
-  // @override
-  // Widget build(BuildContext context) {
-  //
-  //   final data = Provider.of<NewsProvider>(context);
-  //   return Scaffold(
-  //     floatingActionButton: FloatingActionButton(
-  //       child: Icon(Icons.filter_alt_outlined, color: Colors.white,),
-  //       foregroundColor: Colors.blue,
-  //       onPressed: ()=>showModalBottomSheet(
-  //           context: context,
-  //           builder: (context) => SourcesFilter()),
-  //     ),
-  //     appBar: AppBar(
-  //       title: Text("MyNEWS"),
-  //       actions: [
-  //         GestureDetector(
-  //           onTap: ()=>
-  //             showModalBottomSheet(
-  //                 context: context,
-  //                 builder: (context) => LocationSelector()),
-  //           child: Column(
-  //             children: [
-  //               Text("Location"),
-  //               Row(
-  //                 children: [
-  //                   Icon(Icons.location_on),
-  //                   Text(NewsProvider.country),
-  //                 ],
-  //               )
-  //             ],
-  //           ),
-  //         )
-  //       ],
-  //     ),
-  //     body: Column(
-  //       children:[
-  //         ///Search Box
-  //       GestureDetector(
-  //         onTap: () {
-  //         Navigator.of(context).pushNamed('/search');
-  //         },
-  //         child: Container(
-  //           height: 37,
-  //           decoration: BoxDecoration(
-  //               borderRadius: BorderRadius.circular(10),
-  //               color: Colors.white),
-  //           child: Row(
-  //             children: <Widget>[
-  //               Padding(
-  //                 padding: const EdgeInsets.only(left: 22.0),
-  //                 child: Icon(
-  //                   Icons.search,
-  //                   color: Colors.black,
-  //                 ),
-  //               ),
-  //               Padding(
-  //                 padding: const EdgeInsets.only(left: 20.0),
-  //                 child: Text(
-  //                   "Search for a service",
-  //                   style:
-  //                   TextStyle(fontSize: 17, color: Colors.black),
-  //                 ),
-  //               )
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //         children: [
-  //           Text("Top Headlines"),
-  //           PopupMenuButton<sortType>(
-  //             child: Text("Sort: $_sortType"),
-  //             onSelected: (sortType result) {
-  //             //   setState(() { _sortType =enumToString(result);
-  //             //   print(_sortType);
-  //             // });
-  //               switch(enumToString(result)){
-  //                 case "Newest":
-  //                   data.sortNewest();
-  //                   break;
-  //                 case "Oldest":
-  //                   data.sortOldest();
-  //                   break;
-  //                 case "Popularity":
-  //                   data.populateTopHeadlines();
-  //                   break;
-  //               }
-  //               // if(enumToString(result)=="Newest") data.sortNewest();
-  //               // if(enumToString(result)=="Oldest") data.sortOldest();
-  //               },
-  //             itemBuilder: (BuildContext context) => <PopupMenuEntry<sortType>>[
-  //               const PopupMenuItem<sortType>(
-  //                 value: sortType.Newest,
-  //                 child: Text('Newest'),
-  //               ),
-  //               const PopupMenuItem<sortType>(
-  //                 value: sortType.Oldest,
-  //                 child: Text('Oldest'),
-  //               ),
-  //               const PopupMenuItem<sortType>(
-  //                 value: sortType.Popular,
-  //                 child: Text('Popular'),
-  //               ),
-  //             ],
-  //           )
-  //         ],
-  //       ),
-  //        _buildList(context,data),
-  //    ]
-  //     ),
-  //   );
-  // }
 }
-

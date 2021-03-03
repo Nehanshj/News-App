@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:news/utils/provider.dart';
 import 'package:provider/provider.dart';
 
-
 class LocationSelector extends StatefulWidget {
   @override
   _LocationSelectorState createState() => _LocationSelectorState();
 }
 
 class _LocationSelectorState extends State<LocationSelector> {
-
   String _radioValue = NewsProvider.country;
 
+  //to locally update radio button state
   void _handleRadioValueChange(String value) {
     setState(() {
       _radioValue = value;
@@ -43,9 +42,8 @@ class _LocationSelectorState extends State<LocationSelector> {
             endIndent: 10,
           ),
           Expanded(
-            // child: Container(
-            //   height: MediaQuery.of(context).size.height * 0.5,
             child: ListView(
+              ///Radio Buttons
               children: [
                 ListTile(
                   title: Text("India"),
@@ -101,7 +99,7 @@ class _LocationSelectorState extends State<LocationSelector> {
               textColor: Colors.white,
               onPressed: () {
                 Provider.of<NewsProvider>(context, listen: false)
-                    .updateCountry(_radioValue);
+                    .updateCountry(_radioValue); //update the selected Country
                 Navigator.of(context).pop();
               },
               child: Text("APPLY"),
@@ -109,7 +107,6 @@ class _LocationSelectorState extends State<LocationSelector> {
           )
         ],
       ),
-
     );
   }
 }

@@ -1,5 +1,4 @@
 class NewsArticle {
-
   final String title;
   final String description;
   final String urlToImage;
@@ -8,7 +7,14 @@ class NewsArticle {
   final DateTime time;
   final String content;
 
-  NewsArticle({this.title, this.description, this.urlToImage, this.url, this.source, this.time, this.content});
+  NewsArticle(
+      {this.title,
+      this.description,
+      this.urlToImage,
+      this.url,
+      this.source,
+      this.time,
+      this.content});
 
   factory NewsArticle.fromJSON(Map<String, dynamic> json) {
     return NewsArticle(
@@ -20,5 +26,4 @@ class NewsArticle {
         time: DateTime.parse(json['publishedAt']),
         content: json['content'] ?? "");
   }
-
 }
