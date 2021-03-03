@@ -12,14 +12,13 @@ class NewsArticle {
 
   factory NewsArticle.fromJSON(Map<String, dynamic> json) {
     return NewsArticle(
-        source: json['source']['name'],
-        title: json["title"],
-        description: json["description"],
-        urlToImage: json["urlToImage"],
-        url: json["url"],
+        source: json['source']['name'] ?? "",
+        title: json["title"].toString().split(' - ').first ?? "",
+        description: json["description"] ?? "",
+        urlToImage: json["urlToImage"] ?? "",
+        url: json["url"] ?? "",
         time: DateTime.parse(json['publishedAt']),
-        content: json['content']
-    );
+        content: json['content'] ?? "");
   }
 
 }

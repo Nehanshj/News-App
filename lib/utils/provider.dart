@@ -10,8 +10,6 @@ enum LoadingStatus {
   empty
 }
 
-enum sortType { Oldest, Newest, Popular }
-
 String enumToString(Object o) => o.toString().split('.').last;
 
 class NewsProvider extends ChangeNotifier{
@@ -121,13 +119,11 @@ class NewsProvider extends ChangeNotifier{
    // }
 
    Future<void> fetchSources() async {
-     List<Source> sources = await Webservice().fetchSources();
-      this.sources = sources;
-
-      notifyListeners();
-
-     sources.forEach((element) {
-       sourcesToBeFetched.add(element.id);
-     });
-   }
+    List<Source> sources = await Webservice().fetchSources();
+    this.sources = sources;
+    sources.forEach((element) {
+      sourcesToBeFetched.add(element.id);
+    });
+    notifyListeners();
+  }
 }

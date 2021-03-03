@@ -32,7 +32,7 @@ class Webservice {
       Iterable list = result["sources"];
       return list.map((json) => Source.fromJSON(json)).toList();
     } else {
-      throw Exception("Failed to get news");
+      throw Exception("Failed to fetch Sources");
     }
 
 

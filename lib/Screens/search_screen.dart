@@ -12,20 +12,26 @@ class SearchScreen extends StatelessWidget {
       case LoadingStatus.searching:
         return Align(child: CircularProgressIndicator());
       case LoadingStatus.empty:
-        return Align(child: Text("No results found!"));
+        return Center(
+            child: Column(
+          children: [
+            SizedBox(height: 50),
+            Icon(
+              Icons.library_books_outlined,
+              size: MediaQuery.of(context).size.width * 0.6,
+              color: Color(0xFF303F60),
+            ),
+            Text("No results found!"),
+          ],
+        ));
       case LoadingStatus.completed:
-        return Expanded(child: ListView.builder(
-            itemCount: context
-                .read<NewsProvider>()
-                .articleSearched
-                .length,
-            itemBuilder: (context, index) {
-              NewsArticle instance = newsData.articleSearched[index];
-              return Container(
-                  color: Colors.orange,
-                  child: ArticleCard(instance)
-              );
-            }));
+        return Expanded(
+            child: ListView.builder(
+                itemCount: context.read<NewsProvider>().articleSearched.length,
+                itemBuilder: (context, index) {
+                  NewsArticle instance = newsData.articleSearched[index];
+                  return ArticleCard(instance);
+                }));
     }
   }
 
@@ -37,33 +43,42 @@ class SearchScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Search"),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_outlined),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Column(
         children: [
-          TextField(
-            controller: _controller,
-            onSubmitted: (value) {
-              // fetch all the news related to the keyword
-              if(value.isNotEmpty) {
-                news.search(value);
-              }
-
-            },
-            decoration: InputDecoration(
-                labelText: "Enter search term",
-                icon: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.search),
-                ),
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.clear),
-                  onPressed: () {
-                    _controller.clear();
-                  },
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+                controller: _controller,
+                onSubmitted: (value) {
+                  // fetch all the news related to the keyword
+                  if (value.isNotEmpty) {
+                    news.search(value);
+                  }
+                },
+                decoration: InputDecoration(
+                  fillColor: Colors.blueGrey[200],
+                  focusColor: Colors.blueGrey[200],
+                  disabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                    ),
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  border: OutlineInputBorder(),
+                  hintText: "Enter search term",
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.search),
+                  ),
                 )
             ),
           ),
-        _buildList(context, news)
+          _buildList(context, news)
         ],
       ),
     );
