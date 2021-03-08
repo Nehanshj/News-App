@@ -5,8 +5,6 @@ import 'package:news/models/NewsModel.dart';
 import 'package:news/models/sourcesModel.dart';
 
 class Webservice {
-  static const String TOP_HEADLINES_URL =
-      "https://newsapi.org/v2/top-headlines?country=IN&apiKey=$apiKey";
   static const String apiKey = 'c2bb106adb5f425bade571b6b025bbf7';
 
   ///Used on Search Screen to query results as per given search keyword

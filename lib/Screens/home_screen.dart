@@ -49,21 +49,31 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   //used for determining connectivity status
-  String internet = "online";
+  String internet = "loading";
 
   void checkConnectivity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
-      internet = "online";
+     setState(() {
+       internet = "online";
+     });
     } else
-      internet = "offline";
+      setState(() {
+        internet = "offline";
+      });
   }
 
   @override
   Widget build(BuildContext context) {
     final data = Provider.of<NewsProvider>(context);
-
+if(internet=="loading")
+    return Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+else
     return Scaffold(
         floatingActionButton: internet == "online"
             ? FloatingActionButton(
@@ -75,6 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 backgroundColor: Color(0xFF0C54BE),
                 onPressed: () => showModalBottomSheet(
                     shape: RoundedRectangleBorder(
+                      // borderRadius: BorderRadius.only(topLeft: 10,topRight: 10),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     context: context,
@@ -245,9 +256,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Color(0xFF0C54BE),
                         onPressed: () {
                           checkConnectivity(); //Check for connectivity
-                          setState(() {});
                         },
-                        child: Text("Try Again"))
+                        child: Text("Try Again", style: TextStyle(
+                            color:Colors.white
+                        ),))
                   ],
                 ),
               ));
